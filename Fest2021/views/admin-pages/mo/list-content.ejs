@@ -2,7 +2,7 @@
   <div class="col-md-12 col-sm-12">
     <div class="x_panel">
       <div class="x_title">
-        <h2>Math Olympiad<small>Participants List</small></h2>
+        <h1>Math Olympiad<small>Participants List</small></h1>
         <ul class="nav navbar-right panel_toolbox">
           <li>
             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -15,9 +15,10 @@
 
         <% let success="Data has been deleted successfully!" %> <% let
         success2="Payment completed successfully!" %> <% let
-        success3="Participant has been selected successfully!" %>
+        success3="Participant has been selected successfully!" %> <% let
+        success4= "Participant has been edited successfully!" %>
         <%if(error.length>0){if((error==success) || (error==success2) ||
-        (error==success3)){%>
+        (error==success3) || (error==success4)){%>
         <div class="alert alert-success"><%=error%></div>
         <%}else{%>
         <div class="alert alert-danger"><%=error%></div>
@@ -92,7 +93,7 @@
                       </a>
                     </td>
                     <td>
-                      <% const editURL="edit/"+participant._id%>
+                      <% const editURL= participant._id%>
                       <a href="<%= editURL %>">
                         <i class="fa fa-pencil"></i>
                         <span class="fa fa-chevron"></span>
