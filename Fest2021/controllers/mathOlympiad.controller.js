@@ -1,3 +1,4 @@
+require("dotenv").config();
 const MathOlympiad = require("../models/MathOlympiad.model");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
@@ -6,8 +7,8 @@ const code = crypto.randomBytes(8).toString("hex");
 const transporter = nodemailer.createTransport({
   service : "Gmail",
   auth: {
-      user: "ictfestcse@gmail.com",
-      pass: "r1124.S@96#"
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
   }
 });
 

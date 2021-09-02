@@ -1,3 +1,4 @@
+require("dotenv").config();
 const contestTeam = require("../models/ProgrammingContest.model");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
@@ -5,8 +6,8 @@ const crypto = require('crypto');
 const transporter = nodemailer.createTransport({
   service : "Gmail",
   auth: {
-      user: "ictfestcse@gmail.com",
-      pass: "r1124.S@96#"
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
   }
 });
 
