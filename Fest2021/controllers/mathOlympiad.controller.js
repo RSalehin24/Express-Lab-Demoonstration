@@ -1,4 +1,15 @@
 const MathOlympiad = require("../models/MathOlympiad.model");
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const code = crypto.randomBytes(8).toString("hex");
+
+const transporter = nodemailer.createTransport({
+  service : "Gmail",
+  auth: {
+      user: "ictfestcse@gmail.com",
+      pass: "r1124.S@96#"
+  }
+});
 
 const getMO = (req, res) => {
   res.render("math-olympiad/register.ejs", { error: req.flash("error") });
@@ -19,6 +30,7 @@ const postMO = (req, res) => {
   const total = registrationFee;
   const paid = 0;
   const selected = false;
+  const code = crypto.randomBytes(8).toString("hex");
 
   let error = "";
 
@@ -34,6 +46,7 @@ const postMO = (req, res) => {
         contact,
         email,
         institution,
+        code,
         paid,
         total,
         selected,
@@ -42,6 +55,14 @@ const postMO = (req, res) => {
       participant
         .save()
         .then(() => {
+
+          transporter.sendMail({
+            from: "ictfest@outlook.com", 
+            to: participant.email,
+            subject: "ICTFest Programming Contest's code for your team",
+            html: "<h2> Hi "+`${participant.name}`+"</h2><br><p>Here is the unique identification code for your Math Olympiad competition in this year's ICTFest: <br><br>"+`${participant.code}`+"<br><br>Please preserve it for future use.</p>"
+          });
+          
           error = "Participant has been registered successfully!";
           req.flash("error", error);
           res.redirect("/MathOlympiad/register");
@@ -193,18 +214,25 @@ const postEditMO = (req, res) => {
       participant
         .save()
         .then(() => {
+
+          transporter.sendMail({
+            from: "ictfest@outlook.com", 
+            to: participant.email,
+            subject: "ICTFest Programming Contest's code for your team",
+            html: "<h2> Hi "+`${participant.name}`+"</h2><br><p>Here is the unique identification code for your Math Olympiad competition in this year's ICTFest: <br><br>"+`${participant.code}`+"<br><br>Please preserve it for future use.<br>You have received this email because something has been changed in your details.</p>"
+          });
+
           let error =  "Participant has been edited successfully!";
           req.flash("error", error);
           res.redirect("/MathOlympiad/list");
         })
-        .catch(() => {
+        .catch((err) => {
           let error =  "Participant could not be edited!";
           req.flash("error", error);
           res.redirect("/MathOlympiad/list");
         });
     })
     .catch((err) => {
-      console.log(`${err}`);
       let error =  "Participant could not be found!";
       req.flash("error", error);
       res.redirect("/MathOlympiad/list");

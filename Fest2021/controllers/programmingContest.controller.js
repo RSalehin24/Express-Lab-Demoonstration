@@ -1,4 +1,14 @@
 const contestTeam = require("../models/ProgrammingContest.model");
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
+const transporter = nodemailer.createTransport({
+  service : "Gmail",
+  auth: {
+      user: "ictfestcse@gmail.com",
+      pass: "r1124.S@96#"
+  }
+});
 
 const getPC = (req, res) => {
   res.render("programming-contest/register.ejs", { error: req.flash("error") });
@@ -39,6 +49,7 @@ if (category == "School") {
 const total = registrationFee;
 const paid = 0;
 const selected = false;
+const code = crypto.randomBytes(8).toString("hex");
 
 let error = "";
 
@@ -52,6 +63,7 @@ contestTeam.findOne({ name: teamname, institution: institution }).then((team) =>
         teamName: teamname,
         institution: institution,
         category: category,
+        code: code,
         coach: {
             name: coachname,
             contact: coachcontact,
@@ -83,15 +95,44 @@ contestTeam.findOne({ name: teamname, institution: institution }).then((team) =>
     team
         .save()
         .then(() => {
-        error = "Team has been registered successfully!";
-        req.flash("error", error);
-        res.redirect("/ProgrammingContest/register");
+          
+          transporter.sendMail({
+            from: "ictfest@outlook.com", 
+            to: team.coach.email,
+            subject: "ICTFest Programming Contest's code for your team",
+            html: "<h2> Hi "+`${team.coach.name}`+"!</h2><br><p>Here is the unique identification code for your Programming Contest's team competition in this year's ICTFest: <br><br>"+`${team.code}`+"<br><br><br>The team details is given below:<br><br>Name: "+`${team.teamName}`+"<br>Coach: You are the Coach<br>Leader: "+`${team.teamLeader.name}`+"<br>Member 1: "+`${team.teamMember1.name}`+"<br>Member 2: "+`${team.teamMember2.name}`+"<br><br>Please preserve the code for future use.</p>"
+          });
+
+          transporter.sendMail({
+            from: "ictfest@outlook.com", 
+            to: team.teamLeader.email,
+            subject: "ICTFest Programming Contest's code for your team",
+            html: "<h2> Hi "+`${team.teamLeader.name}`+"!</h2><br><p>Here is the unique identification code for your Programming Contest's team competition in this year's ICTFest: <br><br>"+`${team.code}`+"<br><br><br>The team details is given below:<br><br>Name: "+`${team.teamName}`+"<br>Coach: "+`${team.coach.name}`+"<br>Leader: You are the team leader"+"<br>Member 1: "+`${team.teamMember1.name}`+"<br>Member 2: "+`${team.teamMember2.name}`+"<br><br>Please preserve the code for future use.</p>"
+          });
+        
+          transporter.sendMail({
+            from: "ictfest@outlook.com", 
+            to: team.teamMember1.email,
+            subject: "ICTFest Programming Contest's code for your team",
+            html: "<h2> Hi "+`${team.teamMember1.name}`+"!</h2><br><p>Here is the unique identification code for your Programming Contest's team competition in this year's ICTFest: <br><br>"+`${team.code}`+"<br><br><br>The team details is given below:<br><br>Name: "+`${team.teamName}`+"<br>Coach: "+`${team.coach.name}`+"<br>Leader:"+`${team.teamLeader.name}`+"<br>Member 1: You are the Member One"+"<br>Member 2: "+`${team.teamMember2.name}`+"<br><br>Please preserve the code for future use.</p>"
+          });
+        
+          transporter.sendMail({
+            from: "ictfest@outlook.com", 
+            to: team.teamMember2.email,
+            subject: "ICTFest Programming Contest's code for your team",
+            html: "<h2> Hi "+`${team.teamMember2.name}`+"!</h2><br><p>Here is the unique identification code for your Programming Contest's team competition in this year's ICTFest: <br><br>"+`${team.code}`+"<br><br><br>The team details is given below:<br><br>Name: "+`${team.teamName}`+"<br>Coach: "+`${team.coach.name}`+"<br>Leader:"+`${team.teamLeader.name}`+"<br>Member 1:"+`${team.teamMember1.name}`+"<br>Member 2: You are the Member Two"+"<br><br>Please preserve the code for future use.</p>"
+          });       
+
+          error = "Team has been registered successfully!";
+          req.flash("error", error);
+          res.redirect("/ProgrammingContest/register");
         })
         .catch((err) => {
         console.log(`${err}`);
-        //error = "An unexpected error occured while registering the team";
-        req.flash("error", error);
-        res.redirect("/ProgrammingContest/register");
+          error = "An unexpected error occured while registering the team";
+          req.flash("error", error);
+          res.redirect("/ProgrammingContest/register");
         });
     }
 });
@@ -261,6 +302,36 @@ contestTeam.findOne({ name: teamname, institution: institution }).then((team) =>
         team
           .save()
           .then(() => {
+            transporter.sendMail({
+              from: "ictfest@outlook.com", 
+              to: team.coach.email,
+              subject: "ICTFest Programming Contest's code for your team",
+              html: "<h2> Hi "+`${team.coach.name}`+"!</h2><br><p>Here is the unique identification code for your Programming Contest's team competition in this year's ICTFest: <br><br>"+`${team.code}`+"<br><br><br>The team details is given below:<br><br>Name: "+`${team.teamName}`+"<br>Coach: You are the Coach<br>Leader: "+`${team.teamLeader.name}`+"<br>Member 1: "+`${team.teamMember1.name}`+"<br>Member 2: "+`${team.teamMember2.name}`+"<br><br>Please preserve the code for future use.<br>You have received this email because something in your team details have been changed.</p>"
+            });
+  
+            transporter.sendMail({
+              from: "ictfest@outlook.com", 
+              to: team.teamLeader.email,
+              subject: "ICTFest Programming Contest's code for your team",
+              html: "<h2> Hi "+`${team.teamLeader.name}`+"!</h2><br><p>Here is the unique identification code for your Programming Contest's team competition in this year's ICTFest: <br><br>"+`${team.code}`+"<br><br><br>The team details is given below:<br><br>Name: "+`${team.teamName}`+"<br>Coach: "+`${team.coach.name}`+"<br>Leader: You are the team leader"+"<br>Member 1: "+`${team.teamMember1.name}`+"<br>Member 2: "+`${team.teamMember2.name}`+"<br><br>Please preserve the code for future use.<br>You have received this email because something in your team details have been changed.</p>"
+            });
+
+            transporter.sendMail({
+              from: "ictfest@outlook.com", 
+              to: team.teamMember1.email,
+              subject: "ICTFest Programming Contest's code for your team",
+              html: "<h2> Hi "+`${team.teamMember1.name}`+"!</h2><br><p>Here is the unique identification code for your Programming Contest's team competition in this year's ICTFest: <br><br>"+`${team.code}`+"<br><br><br>The team details is given below:<br><br>Name: "+`${team.teamName}`+"<br>Coach: "+`${team.coach.name}`+"<br>Leader:"+`${team.teamLeader.name}`+"<br>Member 1: You are the Member One"+"<br>Member 2: "+`${team.teamMember2.name}`+"<br><br>Please preserve the code for future use.<br>You have received this email because something in your team details have been changed.</p>"
+            });
+          
+            transporter.sendMail({
+              from: "ictfest@outlook.com", 
+              to: team.teamMember2.email,
+              subject: "ICTFest Programming Contest's code for your team",
+              html: "<h2> Hi "+`${team.teamMember2.name}`+"!</h2><br><p>Here is the unique identification code for your Programming Contest's team competition in this year's ICTFest: <br><br>"+`${team.code}`+"<br><br><br>The team details is given below:<br><br>Name: "+`${team.teamName}`+"<br>Coach: "+`${team.coach.name}`+"<br>Leader:"+`${team.teamLeader.name}`+"<br>Member 1:"+`${team.teamMember1.name}`+"<br>Member 2: You are the Member Two"+"<br><br>Please preserve the code for future use.<br>You have received this email because something in your team details have been changed.</p>"
+            });
+
+          
+         
             let error =  "Team has been edited successfully!";
             req.flash("error", error);
             res.redirect("/ProgrammingContest/list");

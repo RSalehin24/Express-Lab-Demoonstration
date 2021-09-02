@@ -40,6 +40,7 @@
                     <th>Contact No.</th>
                     <th>Email</th>
                     <th>Institution</th>
+                    <th>Code</th>
                     <th>T-Shirt</th>
                     <th>Total</th>
                     <th>Paid</th>
@@ -60,6 +61,10 @@
                     <td><%= participant.contact %></td>
                     <td><%= participant.email %></td>
                     <td><%= participant.institution %></td>
+                    <td>
+                     <b><%= participant.code %></b> 
+                    </td>
+
                     <td><%= participant.tshirt %></td>
                     <td><%= participant.total %></td>
                     <td><%= participant.paid %></td>
@@ -73,6 +78,8 @@
                     <td>
                       <% if(participant.paid==participant.total){%>
                       <p style="color: green">Successful</p>
+                      <%}else if(participant.paid>participant.total){%>
+                      <p style="color: orange">Over Paid</p>
                       <%}else{%>
                       <p style="color: red">Incomplete</p>
                       <%}%>

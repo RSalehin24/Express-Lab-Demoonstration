@@ -13,6 +13,8 @@ require("./config/passport")(passport);
 mongoose
   .connect(process.env.MongoURI, {
     useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
     useUnifiedTopology: true,
   })
   .then(() => {

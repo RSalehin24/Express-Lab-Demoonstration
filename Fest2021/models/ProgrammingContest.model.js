@@ -13,6 +13,11 @@ const PCSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    code: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     coach:{
         name: {
             type: String,
